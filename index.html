@@ -1,166 +1,397 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AstroChat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f9; }
-    header { background: #4a148c; color: white; text-align: center; padding: 1rem; font-size: 1.5rem; }
-    .container { padding: 1rem; }
-    .section { background: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    button { padding: 8px 12px; border: none; border-radius: 6px; background: #4a148c; color: white; cursor: pointer; }
-    button:hover { background: #6a1b9a; }
-    input, textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 6px; }
-    .hidden { display: none; }
-    .chat-box { border: 1px solid #ccc; border-radius: 10px; padding: 10px; height: 300px; overflow-y: auto; background: #fafafa; }
-    .msg-client { text-align: left; margin: 5px; padding: 8px; background: #e1bee7; border-radius: 10px; display: inline-block; }
-    .msg-admin { text-align: right; margin: 5px; padding: 8px; background: #c5e1a5; border-radius: 10px; display: inline-block; }
-    .admin-panel { background: #fff; padding: 1rem; border-radius: 10px; }
-    .tabs { display: flex; margin-bottom: 1rem; }
-    .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-bottom: 2px solid #ccc; }
-    .tab.active { border-bottom: 2px solid #4a148c; font-weight: bold; }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AstroChat — Client + Admin</title>
+<style>
+  :root{--accent:#6b21a8;--muted:#6b7280}
+  *{box-sizing:border-box}
+  body{font-family:Inter,Arial,Helvetica,sans-serif;margin:0;background:#f6f4fb;color:#111}
+  header{background:var(--accent);color:#fff;padding:12px;text-align:center;font-size:18px}
+  .wrap{max-width:980px;margin:18px auto;padding:12px}
+  .card{background:#fff;border-radius:10px;padding:14px;margin-bottom:14px;box-shadow:0 6px 18px rgba(16,24,40,0.04)}
+  label{display:block;margin:8px 0 4px;font-weight:600}
+  input[type=text], input[type=number], input[type=password]{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6}
+  button{padding:10px 14px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+  .muted{color:var(--muted);font-size:13px;margin-top:8px}
+  .qr-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .qr{width:120px;height:120px;border-radius:8px;border:1px solid #eee}
+  .icons img{width:36px;height:36px;margin-right:6px}
+  .chat-box{height:320px;overflow:auto;padding:12px;border-radius:8px;background:#fafafa;border:1px solid #eee}
+  .chat-row{display:flex;gap:8px;margin-top:8px}
+  .chat-row input{flex:1;padding:10px;border-radius:8px;border:1px solid #ddd}
+  .small{font-size:14px;color:#333}
+  .timer-row{display:flex;gap:12px;align-items:center;margin-top:8px}
+  .pill{background:#f3f0fb;color:#4b0082;padding:6px 10px;border-radius:999px;font-weight:600}
+  .balance-pill{background:#e6ffed;color:#064e3b;padding:6px 10px;border-radius:999px;font-weight:700}
+  .message{display:block;clear:both;padding:8px 12px;margin:6px 0;border-radius:18px;max-width:75%;word-break:break-word}
+  .msg-client{background:#fce7f3;float:left;border-bottom-left-radius:4px}
+  .msg-astro{background:#dff7e6;float:right;border-bottom-right-radius:4px}
+  .admin-panel{margin-top:8px}
+  .tabs{display:flex;border-bottom:1px solid #eee;margin-bottom:8px}
+  .tab{padding:10px 12px;cursor:pointer;color:#666;border-bottom:3px solid transparent}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+  .row{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f6f6f8}
+  .btn-ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+  footer{padding:12px;text-align:center;color:#757575;font-size:13px}
+  @media(max-width:720px){ .chat-box{height:260px} }
+</style>
 </head>
 <body>
-  <header>🌟 AstroChat 🌟</header>
-  <div class="container">
+<header>🌟 AstroChat — Live (Client + Admin)</header>
+<div class="wrap">
 
-    <!-- Client Side -->
-    <div id="client-section" class="section">
-      <h2>Recharge & Start Chat</h2>
-      <p>Scan QR and pay minimum ₹10 to start chatting.</p>
-      <img src="https://img.icons8.com/color/96/000000/qr-code.png" alt="UPI QR" width="150"><br>
-      <img src="https://img.icons8.com/color/48/google-pay.png" alt="GPay" width="40">
-      <img src="https://img.icons8.com/color/48/bhim-upi.png" alt="UPI" width="40">
-      <img src="https://img.icons8.com/color/48/phone-pe.png" alt="PhonePe" width="40">
-      <p>Enter UTR ID after payment:</p>
-      <input type="text" id="utrInput" placeholder="Enter UTR ID">
-      <button onclick="submitUTR()">Submit</button>
-      <p id="utrStatus"></p>
-
-      <div id="chatSection" class="hidden">
-        <h3>Live Chat</h3>
-        <div class="chat-box" id="chatBox"></div>
-        <input type="text" id="clientMsg" placeholder="Type your message...">
-        <button onclick="sendClientMsg()">Send</button>
+  <!-- CLIENT CARD -->
+  <section class="card">
+    <h2>Recharge & Start Chat</h2>
+    <div class="qr-row">
+      <img id="qrImg" class="qr" alt="UPI QR"/>
+      <div class="icons">
+        <img src="https://img.icons8.com/color/48/google-pay.png" alt="GPay"/>
+        <img src="https://img.icons8.com/color/48/bhim-upi.png" alt="UPI"/>
+        <img src="https://img.icons8.com/color/48/phone-pe.png" alt="PhonePe"/>
       </div>
     </div>
 
-    <!-- Admin Login -->
-    <div class="section">
-      <h2>Admin Login</h2>
-      <input type="password" id="adminPin" placeholder="Enter Admin PIN">
-      <button onclick="loginAdmin()">Login</button>
-      <p id="adminLoginMsg"></p>
+    <div class="small">UPI ID: <strong>st227335-1@okicici</strong></div>
+
+    <label>Amount (min ₹10)</label>
+    <input id="payAmount" type="number" value="10" min="10"/>
+
+    <label>UTR / Transaction ID</label>
+    <input id="utrInput" type="text" placeholder="Enter UTR after payment"/>
+
+    <div style="margin-top:10px">
+      <button id="submitPaymentBtn">Submit Payment (for approval)</button>
+    </div>
+    <div id="pendingNotice" class="muted"></div>
+
+    <hr style="margin:12px 0">
+
+    <div id="walletInfo" class="small">Balance: ₹<span id="balance">0</span></div>
+    <div id="statusMsg" class="muted">Wallet locked until admin approves payment.</div>
+
+    <div class="timer-row" style="margin-top:12px">
+      <div class="pill">Elapsed: <span id="elapsed">00:00</span></div>
+      <div class="balance-pill">Remaining: ₹<span id="balDisp">0</span></div>
+      <div style="margin-left:auto">
+        <button id="startChatBtn" class="btn-ghost" disabled>Start Chat</button>
+        <button id="stopChatBtn" disabled>Stop Chat</button>
+      </div>
     </div>
 
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="section hidden admin-panel">
+    <div id="chatArea" style="margin-top:12px;display:none">
+      <h3>Live Chat</h3>
+      <div id="chatBox" class="chat-box"></div>
+      <div class="chat-row" style="margin-top:8px">
+        <input id="clientMsg" placeholder="Type your message..." />
+        <button id="sendClientBtn">Send</button>
+      </div>
+      <div style="margin-top:8px"><button id="clearClientChat" class="btn-ghost">Clear Chat</button></div>
+    </div>
+  </section>
+
+  <!-- ADMIN LOGIN + PANEL (PIN protected) -->
+  <section class="card">
+    <h2>Admin (Astrologer)</h2>
+    <label>Enter PIN to unlock admin</label>
+    <input id="adminPin" type="password" placeholder="Enter admin PIN"/>
+    <div style="margin-top:8px">
+      <button id="adminLoginBtn">Login</button>
+      <span id="adminMsg" class="muted" style="margin-left:10px"></span>
+    </div>
+
+    <div id="adminPanel" class="admin-panel hidden">
       <div class="tabs">
-        <div id="tab-transactions" class="tab active" onclick="switchTab('transactions')">Transactions</div>
-        <div id="tab-chat" class="tab" onclick="switchTab('chat')">Chat</div>
+        <div id="tabTx" class="tab active" onclick="showTab('tx')">Transactions</div>
+        <div id="tabChat" class="tab" onclick="showTab('chat')">Chat</div>
       </div>
 
-      <!-- Transactions Tab -->
-      <div id="transactionsTab">
+      <!-- Transactions view -->
+      <div id="tabTransactions">
         <h3>Pending Transactions</h3>
-        <ul id="pendingTx"></ul>
+        <div id="pendingList"></div>
       </div>
 
-      <!-- Chat Tab -->
-      <div id="chatTab" class="hidden">
+      <!-- Chat view -->
+      <div id="tabChatView" style="display:none">
         <h3>Live Chat with Client</h3>
-        <div class="chat-box" id="adminChatBox"></div>
-        <input type="text" id="adminMsg" placeholder="Type reply...">
-        <button onclick="sendAdminMsg()">Send</button>
+        <div id="adminChatBox" class="chat-box"></div>
+        <div class="chat-row" style="margin-top:8px">
+          <input id="adminMsg" placeholder="Type reply..." />
+          <button id="sendAdminBtn">Send</button>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <script>
-    let pendingTransactions = [];
-    let isApproved = false;
+</div>
+<footer>© AstroChat</footer>
 
-    function submitUTR() {
-      let utr = document.getElementById('utrInput').value.trim();
-      if (!utr) { alert("Enter UTR ID"); return; }
-      pendingTransactions.push(utr);
-      document.getElementById('utrStatus').innerText = "Waiting for admin approval...";
-      updatePendingList();
+<script>
+// --- Constants & storage keys ---
+const ADMIN_PIN = "2103";
+const KEY_BAL = "astro_bal_v10";
+const KEY_PEND = "astro_pend_v10";
+const KEY_MSGS = "astro_msgs_v10";
+const PER_MIN = 10; // ₹ per minute
+const MIN_RECHARGE = 10;
+
+// --- Utils ---
+function readKey(k, def){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){return def;} }
+function writeKey(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+
+// init storage defaults
+if(readKey(KEY_BAL, null) === null) writeKey(KEY_BAL, 0);
+if(readKey(KEY_PEND, null) === null) writeKey(KEY_PEND, []);
+if(readKey(KEY_MSGS, null) === null) writeKey(KEY_MSGS, []);
+
+// --- QR ---
+document.getElementById('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent('upi://pay?pa=st227335-1@okicici&pn=Shivam%20Tiwari&cu=INR');
+
+// --- Elements ---
+const balanceEl = document.getElementById('balance');
+const balDispEl = document.getElementById('balDisp');
+const pendingNoticeEl = document.getElementById('pendingNotice');
+const statusMsgEl = document.getElementById('statusMsg');
+const startBtn = document.getElementById('startChatBtn');
+const stopBtn = document.getElementById('stopChatBtn');
+const chatArea = document.getElementById('chatArea');
+const chatBox = document.getElementById('chatBox');
+const adminChatBox = document.getElementById('adminChatBox');
+const elapsedEl = document.getElementById('elapsed');
+
+// state
+let timer = null;
+let seconds = 0;
+let chatRunning = false;
+
+// --- Payment submit ---
+document.getElementById('submitPaymentBtn').addEventListener('click', ()=>{
+  const amt = Number(document.getElementById('payAmount').value || 0);
+  const utr = (document.getElementById('utrInput').value||'').trim();
+  if(!utr){ alert('Enter UTR'); return; }
+  if(isNaN(amt) || amt < MIN_RECHARGE){ alert('Minimum recharge ₹'+MIN_RECHARGE); return; }
+  const pend = readKey(KEY_PEND, []);
+  const tx = { id: 'tx_'+Date.now(), amount: amt, utr, status: 'pending', when: Date.now() };
+  pend.unshift(tx);
+  writeKey(KEY_PEND, pend);
+  pendingNoticeEl.innerText = 'Pending: ₹'+amt+' (UTR: '+utr+')';
+  alert('Payment submitted. Admin will approve soon.');
+  document.getElementById('utrInput').value='';
+  renderPendingList();
+});
+
+// --- Admin login & panel ---
+document.getElementById('adminLoginBtn').addEventListener('click', ()=>{
+  const pin = document.getElementById('adminPin').value || '';
+  if(pin === ADMIN_PIN){
+    document.getElementById('adminPanel').classList.remove('hidden');
+    document.getElementById('adminMsg').innerText = 'Login successful';
+    renderPendingList();
+    renderMessages();
+  } else {
+    document.getElementById('adminMsg').innerText = 'Incorrect PIN';
+  }
+});
+
+function renderPendingList(){
+  const pend = readKey(KEY_PEND, []);
+  const container = document.getElementById('pendingList'); container.innerHTML='';
+  if(pend.length===0){ container.innerHTML = '<div class="muted">No pending payments</div>'; return; }
+  pend.forEach((tx, i)=>{
+    if(tx.status === 'pending'){
+      const row = document.createElement('div'); row.className='row';
+      row.innerHTML = '<div><strong>₹'+tx.amount+'</strong> &nbsp; UTR: '+tx.utr+'</div>';
+      const right = document.createElement('div');
+      const approve = document.createElement('button'); approve.innerText='Approve'; approve.onclick = ()=>{ approveTx(tx.id); };
+      const reject = document.createElement('button'); reject.innerText='Reject'; reject.style.marginLeft='8px'; reject.onclick = ()=>{ rejectTx(tx.id); };
+      right.appendChild(approve); right.appendChild(reject); row.appendChild(right);
+      container.appendChild(row);
     }
+  });
+  // update top pending notice
+  const p = pend.find(x=>x.status==='pending');
+  pendingNoticeEl.innerText = p ? ('Pending: ₹'+p.amount+' (UTR: '+p.utr+')') : 'No pending payments';
+}
 
-    function loginAdmin() {
-      let pin = document.getElementById('adminPin').value;
-      if (pin === "2103") {
-        document.getElementById('adminPanel').classList.remove('hidden');
-        document.getElementById('adminLoginMsg').innerText = "Login successful";
+// approve
+function approveTx(id){
+  const pend = readKey(KEY_PEND, []);
+  const idx = pend.findIndex(p=>p.id===id);
+  if(idx===-1) return;
+  pend[idx].status = 'approved';
+  writeKey(KEY_PEND, pend);
+  // credit balance
+  const bal = Number(readKey(KEY_BAL,0));
+  writeKey(KEY_BAL, bal + Number(pend[idx].amount));
+  // notify client
+  statusMsgEl.innerText = 'Approved! You can start chat now.';
+  renderPendingList();
+  updateBalanceUI();
+  alert('Approved and balance credited: ₹'+pend[idx].amount);
+}
+
+// reject
+function rejectTx(id){
+  const pend = readKey(KEY_PEND, []);
+  const idx = pend.findIndex(p=>p.id===id);
+  if(idx===-1) return;
+  const reason = prompt('Enter rejection reason') || 'No reason';
+  pend[idx].status = 'rejected'; pend[idx].reason = reason;
+  writeKey(KEY_PEND, pend);
+  // push system message to client messages
+  const msgs = readKey(KEY_MSGS, []);
+  msgs.push({by:'system', text:'Transaction '+pend[idx].utr+' rejected: '+reason, ts:Date.now()});
+  writeKey(KEY_MSGS, msgs);
+  renderPendingList(); renderMessages();
+  alert('Rejected and client notified.');
+}
+
+// --- Chat & messages ---
+function readMsgs(){ return readKey(KEY_MSGS, []); }
+function writeMsgs(m){ writeKey(KEY_MSGS, m); }
+
+function renderMessages(){
+  const msgs = readMsgs();
+  chatBox.innerHTML = ''; adminChatBox.innerHTML = '';
+  msgs.forEach(m=>{
+    const div = document.createElement('div');
+    if(m.by === 'client'){
+      div.className = 'message msg-client'; div.innerText = m.text;
+      chatBox.appendChild(div); adminChatBox.appendChild(div.cloneNode(true));
+    } else if(m.by === 'astro'){
+      div.className = 'message msg-astro'; div.innerText = m.text;
+      chatBox.appendChild(div); adminChatBox.appendChild(div.cloneNode(true));
+    } else {
+      // system
+      const s = document.createElement('div'); s.className='muted'; s.innerText = m.text;
+      chatBox.appendChild(s); adminChatBox.appendChild(s.cloneNode(true));
+    }
+  });
+  chatBox.scrollTop = chatBox.scrollHeight;
+  adminChatBox.scrollTop = adminChatBox.scrollHeight;
+}
+
+// client send
+document.getElementById('sendClientBtn').addEventListener('click', ()=>{
+  if(!chatRunning){ alert('Start chat to send messages'); return; }
+  const text = (document.getElementById('clientMsg').value||'').trim(); if(!text) return;
+  const msgs = readMsgs(); msgs.push({by:'client', text, ts:Date.now()}); writeMsgs(msgs);
+  document.getElementById('clientMsg').value=''; renderMessages();
+});
+
+// admin send
+document.getElementById('sendAdminBtn').addEventListener('click', ()=>{
+  const text = (document.getElementById('adminMsg').value||'').trim(); if(!text) return;
+  const msgs = readMsgs(); msgs.push({by:'astro', text, ts:Date.now()}); writeMsgs(msgs);
+  document.getElementById('adminMsg').value=''; renderMessages();
+});
+
+// clear chat
+document.getElementById('clearClientChat').addEventListener('click', ()=>{ if(confirm('Clear chat?')){ writeKey(KEY_MSGS, []); renderMessages(); } });
+
+// --- Timer & balance logic ---
+function updateBalanceUI(){
+  const bal = Number(readKey(KEY_BAL,0));
+  balanceEl.innerText = bal;
+  balDispEl.innerText = bal;
+  // enable start button if balance >= PER_MIN
+  if(bal >= PER_MIN) startBtn.disabled = false; else startBtn.disabled = true;
+}
+updateBalanceUI();
+
+startBtn.addEventListener('click', ()=>{
+  const bal = Number(readKey(KEY_BAL,0));
+  if(bal < PER_MIN){ alert('Need at least ₹'+PER_MIN+' to start chat'); return; }
+  if(!chatRunning){
+    chatRunning = true;
+    document.getElementById('chatArea').style.display = 'block';
+    startTimer();
+    startBtn.disabled = true; stopBtn.disabled = false;
+  }
+});
+
+stopBtn.addEventListener('click', ()=>{
+  stopTimer();
+  chatRunning = false;
+  startBtn.disabled = false; stopBtn.disabled = true;
+});
+
+function startTimer(){
+  if(timer) clearInterval(timer);
+  timer = setInterval(()=>{
+    seconds++;
+    // every second update elapsed display
+    elapsedEl.innerText = formatTime(seconds);
+    // when a full minute passed, deduct PER_MIN
+    if(seconds > 0 && seconds % 60 === 0){
+      let bal = Number(readKey(KEY_BAL,0));
+      if(bal >= PER_MIN){
+        bal -= PER_MIN; writeKey(KEY_BAL, bal); updateBalanceUI();
       } else {
-        document.getElementById('adminLoginMsg').innerText = "Invalid PIN";
+        // insufficient -> stop chat
+        stopTimer();
+        chatRunning = false;
+        startBtn.disabled = true; stopBtn.disabled = true;
+        alert('Balance finished. Please recharge to continue.');
+        statusMsgEl.innerText = 'Balance finished. Please recharge to continue.';
       }
     }
+  }, 1000);
+}
 
-    function updatePendingList() {
-      let list = document.getElementById('pendingTx');
-      list.innerHTML = "";
-      pendingTransactions.forEach((utr, index) => {
-        let li = document.createElement('li');
-        li.innerHTML = utr + 
-          " <button onclick='approveTx("+index+")'>Approve</button>" + 
-          " <button onclick='rejectTx("+index+")'>Reject</button>";
-        list.appendChild(li);
-      });
-    }
+function stopTimer(){
+  if(timer) clearInterval(timer);
+  timer = null;
+}
 
-    function approveTx(index) {
-      let utr = pendingTransactions[index];
-      pendingTransactions.splice(index,1);
-      updatePendingList();
-      isApproved = true;
-      document.getElementById('utrStatus').innerText = "Approved! You can start chat now.";
-      document.getElementById('chatSection').classList.remove('hidden');
-    }
+function formatTime(s){
+  const mm = String(Math.floor(s/60)).padStart(2,'0');
+  const ss = String(s%60).padStart(2,'0');
+  return mm+':'+ss;
+}
 
-    function rejectTx(index) {
-      let utr = pendingTransactions[index];
-      let reason = prompt("Enter rejection reason:");
-      pendingTransactions.splice(index,1);
-      updatePendingList();
-      document.getElementById('utrStatus').innerText = "Rejected: " + reason;
+// When admin approves, if balance updated, keep chat running (if already running) and enable start
+// We'll poll pending tx to automatically credit approved tx & remove it, to simulate workflow
+setInterval(()=>{
+  const pend = readKey(KEY_PEND, []);
+  if(pend.length > 0){
+    // find any approved tx
+    const idx = pend.findIndex(p=>p.status === 'approved');
+    if(idx !== -1){
+      const tx = pend[idx];
+      // credit done already at approveTx; here remove or keep record - we'll remove to clear pending list
+      // remove from pend
+      pend.splice(idx,1);
+      writeKey(KEY_PEND, pend);
+      renderPendingList();
+      // update balance UI (already credited in approveTx, but ensure UI)
+      updateBalanceUI();
     }
+  }
+  renderMessages();
+}, 1500);
 
-    function sendClientMsg() {
-      if (!isApproved) { alert("Wait for approval"); return; }
-      let msg = document.getElementById('clientMsg').value;
-      if (!msg) return;
-      let chat = document.getElementById('chatBox');
-      chat.innerHTML += "<div class='msg-client'>"+msg+"</div><br>";
-      document.getElementById('clientMsg').value = "";
-      document.getElementById('adminChatBox').innerHTML += "<div class='msg-client'>"+msg+"</div><br>";
-    }
+// render lists initially
+renderPendingList();
+renderMessages();
+updateBalanceUI();
 
-    function sendAdminMsg() {
-      let msg = document.getElementById('adminMsg').value;
-      if (!msg) return;
-      let chat = document.getElementById('adminChatBox');
-      chat.innerHTML += "<div class='msg-admin'>"+msg+"</div><br>";
-      document.getElementById('adminMsg').value = "";
-      document.getElementById('chatBox').innerHTML += "<div class='msg-admin'>"+msg+"</div><br>";
-    }
+// Tab switching
+function showTab(t){
+  document.getElementById('tabTransactions').style.display = t==='tx' ? 'block' : 'none';
+  document.getElementById('tabChatView').style.display = t==='chat' ? 'block' : 'none';
+  document.getElementById('tabTx').classList.toggle('active', t==='tx');
+  document.getElementById('tabChat').classList.toggle('active', t==='chat');
+}
 
-    function switchTab(tab) {
-      document.getElementById('transactionsTab').classList.add('hidden');
-      document.getElementById('chatTab').classList.add('hidden');
-      document.getElementById('tab-transactions').classList.remove('active');
-      document.getElementById('tab-chat').classList.remove('active');
-      if (tab === 'transactions') {
-        document.getElementById('transactionsTab').classList.remove('hidden');
-        document.getElementById('tab-transactions').classList.add('active');
-      } else {
-        document.getElementById('chatTab').classList.remove('hidden');
-        document.getElementById('tab-chat').classList.add('active');
-      }
-    }
-  </script>
+// ensure tab ids exist for function
+document.getElementById('tabTransactions').id = 'tabTransactions';
+document.getElementById('tabChatView').id = 'tabChatView';
+
+</script>
 </body>
 </html>
