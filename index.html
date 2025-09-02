@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AstroChat — Client</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="header"><h1>AstroChat — Client</h1></header>
+  <main class="main">
+    <section class="card">
+      <h2>Payment — Recharge Wallet</h2>
+      <div class="qr-row">
+        <img id="qrImg" src="" alt="UPI QR" class="qr"/>
+        <div class="icons">
+          <img src="https://img.icons8.com/color/48/google-pay.png" alt="GPay"/>
+          <img src="https://img.icons8.com/color/48/bhim-upi.png" alt="UPI"/>
+          <img src="https://img.icons8.com/color/48/phone-pe.png" alt="PhonePe"/>
+        </div>
+      </div>
+      <p>UPI ID: <strong>st227335-1@okicici</strong></p>
+      <label>Amount (min ₹10)</label>
+      <input id="amount" type="number" value="10" min="10"/>
+      <label>UTR / Transaction ID</label>
+      <input id="utr" placeholder="Enter transaction UTR"/>
+      <button id="submitPayment">Submit Payment (for approval)</button>
+      <div id="pendingNotice" class="muted"></div>
+    </section>
+
+    <section class="card" id="walletCard">
+      <h2>Wallet</h2>
+      <div>Balance: ₹<span id="balance">0</span></div>
+      <div id="statusMsg" class="muted">Wallet locked until admin approves payment.</div>
+    </section>
+
+    <section class="card" id="chatCard" style="display:none">
+      <h2>Live Chat</h2>
+      <div id="chatBox" class="chat-box"></div>
+      <div class="chat-row">
+        <input id="clientMsg" placeholder="Type message..." />
+        <button id="sendBtn">Send</button>
+      </div>
+      <div class="chat-actions">
+        <button id="startChat">Start Chat</button>
+        <button id="stopChat" disabled>Stop Chat</button>
+        <button id="clearChat">Clear Chat</button>
+      </div>
+      <div class="timer">Time: <span id="timer">00:00</span></div>
+    </section>
+  </main>
+  <footer class="footer">© AstroChat</footer>
+<script src="script.js"></script>
+<script>initClient();</script>
+</body>
+</html>
