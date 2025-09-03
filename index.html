@@ -8,16 +8,19 @@
 </head>
 <body>
   <div id="app">
-    <h1>ChatTalk</h1>
+    <h1>🌟 ChatTalk</h1>
 
     <!-- Client Section -->
-    <div id="client-section">
+    <div id="client-section" class="card">
       <h2>Client Panel</h2>
       <div id="wallet">Wallet: ₹<span id="wallet-balance">0</span></div>
 
       <div id="recharge-form">
         <h3>Recharge Wallet</h3>
-        <p>Scan UPI QR: <b>st227335-1@okicici</b></p>
+        <div class="qr-box">
+          <div id="qrcode"></div>
+          <p><b>UPI ID:</b> st227335-1@okicici</p>
+        </div>
         <input type="number" id="recharge-amount" placeholder="Enter amount (min 10)" />
         <input type="text" id="recharge-ref" placeholder="Enter UPI Ref/UTR" />
         <button onclick="submitRecharge()">Submit Recharge</button>
@@ -25,10 +28,10 @@
 
       <div id="chat-section" style="display:none;">
         <h3>Chat with Astrologer</h3>
-        <div id="chat-box"></div>
+        <div id="chat-box" class="chat-window"></div>
         <input type="text" id="client-message" placeholder="Type your message" />
         <button onclick="sendMessage()">Send</button>
-        <button onclick="clearChat()">Clear Chat</button>
+        <button class="danger" onclick="clearChat()">Clear Chat</button>
       </div>
 
       <button id="start-chat-btn" onclick="startChat()" style="display:none;">Start Chat</button>
@@ -37,29 +40,29 @@
     <hr>
 
     <!-- Admin Section -->
-    <div id="admin-login">
+    <div id="admin-login" class="card">
       <h2>Admin Login</h2>
       <input type="password" id="admin-pin" placeholder="Enter PIN" />
       <button onclick="adminLogin()">Login</button>
     </div>
 
-    <div id="admin-section" style="display:none;">
+    <div id="admin-section" style="display:none;" class="card">
       <h2>Admin Panel</h2>
 
       <h3>Pending Recharges</h3>
       <div id="pending-recharges"></div>
 
       <h3>Chat</h3>
-      <div id="admin-chat-box"></div>
+      <div id="admin-chat-box" class="chat-window"></div>
       <input type="text" id="admin-message" placeholder="Type reply" />
       <button onclick="sendAdminMessage()">Send</button>
-      <button onclick="clearChat()">Clear Chat</button>
+      <button class="danger" onclick="clearChat()">Clear Chat</button>
     </div>
 
     <hr>
 
     <!-- About Section -->
-    <div id="about">
+    <div id="about" class="card">
       <h2>About Me</h2>
       <p>Namaste! I am Shivam Tiwari, a trained Vedic astrologer with 6 years of dedicated experience and deep knowledge of classical astrology. I specialize in Kundli analysis, relationship compatibility, and planetary remedies, combining ancient scriptural wisdom with practical, real-life solutions. My consultations are aimed at bringing clarity, harmony, and positive transformation in people’s lives. I offer guidance in horoscope analysis, match-making, career, finance, health, and life event timing (Muhurta). My remedies are simple yet effective, ensuring that anyone can adopt them with ease. Over the years, I have helped numerous individuals resolve challenges and make confident life decisions.</p>
       <p><b>My Expertise In Vedic Astrology</b><br>
@@ -72,6 +75,16 @@
     </div>
   </div>
 
+  <!-- QRCode JS library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="script.js"></script>
+  <script>
+    // Generate QR automatically for UPI ID
+    new QRCode(document.getElementById("qrcode"), {
+      text: "upi://pay?pa=st227335-1@okicici&pn=ChatTalk",
+      width: 128,
+      height: 128
+    });
+  </script>
 </body>
 </html>
