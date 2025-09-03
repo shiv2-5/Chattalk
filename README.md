@@ -1,15 +1,7 @@
-# AstroChat (Firebase Ready)
-Single-page app that uses Firebase Firestore for:
-- Transactions (pending → approve/reject)
-- Wallet balance with ₹10/min auto deduction
-- Start/Stop chat with live timer
-- Live chat (client ↔ admin), admin PIN 2103
+# Chattalk Project
 
-No build tools needed. Just open `index.html` or deploy to GitHub Pages.
-
-## Firestore
-The app will create/use these documents/collections:
-- `wallet/primary` (field: balance: number)
-- `control/state` (field: running: boolean)
-- `transactions` (utr, amount, status, timestamps)
-- `messages` (sender, message, timestamp)
+## Setup
+1. Replace `firebase-config.js` values with your Firebase project config.
+2. Upload the project folder to GitHub Pages.
+3. Open `index.html` for client and `admin.html` for admin chat.
+4. The Clear Chat button clears all messages from Firebase and UI.

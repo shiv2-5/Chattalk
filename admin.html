@@ -1,41 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>AstroChat — Admin</title>
-  <link rel="stylesheet" href="style.css"/>
+<meta charset="UTF-8">
+<title>Admin Chat</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="firebase-config.js"></script>
 </head>
 <body>
-  <header class="header"><h1>AstroChat — Admin</h1></header>
-  <main class="main">
-    <section class="card">
-      <h2>Admin Login</h2>
-      <input id="adminPin" type="password" placeholder="Enter Admin PIN"/>
-      <button id="adminLogin">Unlock</button>
-      <div id="adminNotice" class="muted"></div>
-    </section>
-
-    <section class="card hidden" id="adminPanel">
-      <div class="grid">
-        <div class="panel">
-          <h3>Pending Transactions</h3>
-          <div id="pendingTable" class="table"></div>
-        </div>
-        <div class="panel">
-          <h3>Chat (live)</h3>
-          <div id="adminChatBox" class="chat-box"></div>
-          <div class="chat-row">
-            <input id="adminMsg" placeholder="Type reply to client..." />
-            <button id="adminSend">Send Reply</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-  <footer class="footer">© AstroChat</footer>
-<script src="script.js"></script>
+<h1>Admin Chat</h1>
+<div id="chatContainer"></div>
+<button id="clearChatBtn">Clear Chat</button>
 <script src="admin.js"></script>
-<script>initAdmin();</script>
 </body>
 </html>
