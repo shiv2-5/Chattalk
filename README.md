@@ -1,15 +1,18 @@
-# AstroChat (Firebase Ready)
-Single-page app that uses Firebase Firestore for:
-- Transactions (pending → approve/reject)
-- Wallet balance with ₹10/min auto deduction
-- Start/Stop chat with live timer
-- Live chat (client ↔ admin), admin PIN 2103
+# ChatTalk v3
 
-No build tools needed. Just open `index.html` or deploy to GitHub Pages.
+Paid chat with manual UPI approval and per-minute billing.
 
-## Firestore
-The app will create/use these documents/collections:
-- `wallet/primary` (field: balance: number)
-- `control/state` (field: running: boolean)
-- `transactions` (utr, amount, status, timestamps)
-- `messages` (sender, message, timestamp)
+## Run locally
+
+```bash
+npm install
+npm start
+```
+
+- Client: http://localhost:3000/
+- Admin: http://localhost:3000/admin  (PIN: 2103)
+
+## Config
+- Per-minute rate: change `RATE_PER_MIN` in `server.js`.
+- Minimum recharge: change `MIN_RECHARGE` in `server.js`.
+- UPI ID: change `UPI_ID` in `server.js`.
