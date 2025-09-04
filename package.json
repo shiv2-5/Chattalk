@@ -1,13 +1,21 @@
 {
-  "name": "chattalk_v4",
+  "name": "chattalk",
   "version": "1.0.0",
-  "description": "ChatTalk v4 – Paid chat with timer, auto deduction and stop on zero balance",
+  "description": "ChatTalk \u2013 paid chat with manual UPI wallet approval (Rs 10/min)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
+    "cookie-session": "^2.0.0",
+    "dayjs": "^1.11.11",
     "express": "^4.19.2",
-    "socket.io": "^4.7.5"
+    "qrcode": "^1.5.3",
+    "socket.io": "^4.7.5",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }
