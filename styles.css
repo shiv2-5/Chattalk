@@ -1,0 +1,77 @@
+/* Utility components */
+.tab-btn {
+  @apply px-3 py-1.5 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-100;
+}
+.tab-btn.active {
+  @apply bg-slate-900 text-white;
+}
+
+.card {
+  @apply bg-white rounded-2xl shadow-sm border border-slate-200 p-4;
+}
+.card-title {
+  @apply text-base font-semibold;
+}
+.badge {
+  @apply text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full;
+}
+.label {
+  @apply text-xs font-medium text-slate-600;
+}
+.input {
+  @apply w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500;
+}
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-xl px-3 py-2 font-medium bg-indigo-600 text-white hover:bg-indigo-700 active:scale-[.99];
+}
+.btn-ghost {
+  @apply inline-flex items-center justify-center rounded-xl px-3 py-2 font-medium border border-slate-200 hover:bg-slate-50;
+}
+.btn-danger {
+  @apply inline-flex items-center justify-center rounded-xl px-3 py-2 font-medium bg-rose-600 text-white hover:bg-rose-700;
+}
+
+.chat-window {
+  height: 420px;
+  overflow: auto;
+  @apply bg-slate-50 rounded-xl border border-slate-200 p-3;
+}
+
+/* Chat bubbles */
+.msg-row { display: grid; grid-template-columns: 1fr; margin-bottom: .5rem; }
+.msg {
+  max-width: 80%;
+  padding: .5rem .75rem;
+  border-radius: 14px;
+  display: inline-block;
+  position: relative;
+  word-wrap: break-word;
+}
+.msg.client {
+  background: white;
+  border: 1px solid rgb(226 232 240);
+  border-bottom-left-radius: 4px;
+}
+.msg.admin {
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-bottom-right-radius: 4px;
+}
+.msg-meta {
+  font-size: .7rem; color: #64748b; margin-top: .15rem;
+}
+.row-client { justify-items: start; }
+.row-admin { justify-items: end; }
+
+/* Modals */
+.modal {
+  position: fixed; inset: 0; display: grid; place-items: center;
+  background: rgba(15, 23, 42, .5);
+  padding: 1rem;
+}
+.modal-card {
+  @apply bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-200 p-4;
+}
+
+/* Hide utility */
+.hidden { display: none; }
