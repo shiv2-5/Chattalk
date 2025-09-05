@@ -1,0 +1,1 @@
+This is a frontend-only ChatTalk demo. No backend. To use: open index.html in a browser.
